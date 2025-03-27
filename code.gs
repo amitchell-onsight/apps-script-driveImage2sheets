@@ -1,6 +1,7 @@
 /*
 Created by:
   RemcoE33
+  Mofified by AlfieMitchell via ChatGPT to sort stills alphabetically
 */
 
 function onOpen(e) {
@@ -49,42 +50,58 @@ function manual() {
 
 function _processImages(images, mode, onOff) {
   const output = [];
+  const files = [];
 
   while (images.hasNext()) {
     const file = images.next();
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW)
+    files.push(file);
+  }
+
+  // Sort files alphabetically by name
+  files.sort((a, b) => a.getName().localeCompare(b.getName()));
+
+  for (const file of files) {
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
     const downloadUrl = file.getDownloadUrl();
     if (onOff) {
-      output.push([`=IF(${onOff} = TRUE,IMAGE("${downloadUrl}",${mode}),)`])
+      output.push([`=IF(${onOff} = TRUE,IMAGE("${downloadUrl}",${mode}),)`]);
     } else {
-      output.push([`=IMAGE("${downloadUrl}",${mode})`])
+      output.push([`=IMAGE("${downloadUrl}",${mode})`]);
     }
   }
+
   if (onOff) {
     SpreadsheetApp.getActiveSheet().getRange(1, 1).insertCheckboxes();
     SpreadsheetApp.getActiveSheet().getRange(2, 1, output.length, 1).setFormulas(output);
   } else {
     SpreadsheetApp.getActiveSheet().getRange(1, 1, output.length, 1).setFormulas(output);
   }
-  SpreadsheetApp.getUi().alert(`Processed ${output.length} images`)
+  
+  SpreadsheetApp.getUi().alert(`Processed ${output.length} images`);
 }
 
-function downloadUrls(){
+function downloadUrls() {
   const ui = SpreadsheetApp.getUi();
-  const driveFolder = ui.prompt("Enter google drive folder id").getResponseText().trim()
-  const imageType = `image/${ui.prompt("Enter image type: (png / jpeg / gif / svg").getResponseText().toLowerCase().trim()}`
+  const driveFolder = ui.prompt("Enter Google Drive folder ID").getResponseText().trim();
+  const imageType = `image/${ui.prompt("Enter image type: (png / jpeg / gif / svg)").getResponseText().toLowerCase().trim()}`;
   const images = DriveApp.getFolderById(driveFolder).getFilesByType(imageType);
 
-  const output = [['Filename',['Download url']]];
+  const files = [];
 
   while (images.hasNext()) {
     const file = images.next();
-    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW)
-    const fileName = file.getName();
-    const downloadUrl = file.getDownloadUrl();
-    output.push([fileName,downloadUrl])
+    files.push(file);
   }
 
-  SpreadsheetApp.getActiveSheet().getRange(1,1,output.length,2).setValues(output);
+  // Sort files alphabetically by name
+  files.sort((a, b) => a.getName().localeCompare(b.getName()));
 
+  const output = [['Filename', 'Download URL']];
+
+  for (const file of files) {
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK, DriveApp.Permission.VIEW);
+    output.push([file.getName(), file.getDownloadUrl()]);
+  }
+
+  SpreadsheetApp.getActiveSheet().getRange(1, 1, output.length, 2).setValues(output);
 }
