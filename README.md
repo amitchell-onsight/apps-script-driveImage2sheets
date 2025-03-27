@@ -1,14 +1,12 @@
 # apps-script-driveImage2sheets
 Get images from a drive file and insert to google sheets with the =IMAGE() formula.
 
-
 ### Be aware:
 This script will set the image 'access to everyone with link' as viewer. This may not work on Workspace users. Depends on the admin settings. You have a script runtime limitation, so maybe you need to batch process.
 
 ### Installation:
   - Tools -> Script editor.
   - Clear the little code you see and past the code from below.
-  - Optional: change the , to ; on codeline 58 / 60 if you have sheets formula's with ;.
   - Execute once, give permission and ignore the error.
   - Close the script editor.
   - Refresh your spreadsheet browser tab.
@@ -34,4 +32,6 @@ Now you see a new menu: "Drive images" in there there are 4 options:
 ## Download url's
   - Creates a list with filenames and drive download url's.
 
-
+## Converting to image inside cell
+  - Copy the cell(s) containing the hyperlink
+  - Paste, *without formatting*, into blank cell(s)
